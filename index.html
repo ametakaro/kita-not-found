@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Kita Not Found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e13;
+    --panel:#141821;
+    --line:#252b38;
+    --text:#e9ecf2;
+    --muted:#8a93a6;
+    --pink:#ff5c8a;
+    --pink-soft:#ff5c8a22;
+    --green:#7cffb2;
+    --amber:#ffc65c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:24px;overflow-x:hidden;
+    background-image:
+      radial-gradient(circle at 20% 10%, #ff5c8a14 0, transparent 40%),
+      radial-gradient(circle at 85% 90%, #7cffb20f 0, transparent 40%);
+  }
+  .scanlines{
+    pointer-events:none;position:fixed;inset:0;
+    background:repeating-linear-gradient(to bottom, transparent 0 2px, #ffffff05 2px 3px);
+    z-index:5;
+  }
+  .wrap{width:100%;max-width:560px;position:relative;z-index:2}
+  .screen{display:none;animation:fadeIn .5s ease both}
+  .screen.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+  /* ---------- Screen 1: 404 ---------- */
+  .code-tag{
+    display:inline-block;font-size:12px;letter-spacing:.08em;color:var(--pink);
+    border:1px solid var(--pink);border-radius:999px;padding:4px 10px;margin-bottom:22px;
+  }
+  .glitch{
+    font-family:"JetBrains Mono",monospace;font-weight:800;
+    font-size:clamp(96px,26vw,168px);line-height:.9;letter-spacing:-.04em;
+    position:relative;display:inline-block;color:var(--text);
+  }
+  .glitch::before,.glitch::after{
+    content:attr(data-text);position:absolute;left:0;top:0;width:100%;
+    overflow:hidden;background:var(--bg);
+  }
+  .glitch::before{color:var(--pink);left:3px;animation:g1 2.6s infinite linear alternate-reverse}
+  .glitch::after{color:var(--green);left:-3px;animation:g2 3.1s infinite linear alternate-reverse}
+  @keyframes g1{
+    0%{clip-path:inset(10% 0 80% 0)}20%{clip-path:inset(60% 0 10% 0)}
+    40%{clip-path:inset(30% 0 50% 0)}60%{clip-path:inset(80% 0 5% 0)}
+    80%{clip-path:inset(5% 0 70% 0)}100%{clip-path:inset(45% 0 35% 0)}
+  }
+  @keyframes g2{
+    0%{clip-path:inset(70% 0 10% 0)}25%{clip-path:inset(15% 0 65% 0)}
+    50%{clip-path:inset(50% 0 30% 0)}75%{clip-path:inset(5% 0 85% 0)}
+    100%{clip-path:inset(85% 0 2% 0)}
+  }
+  h1{font-size:clamp(26px,6vw,36px);font-weight:700;margin:14px 0 12px}
+  h1 .strike{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--pink)}
+  .lead{color:var(--muted);font-size:17px;line-height:1.6;margin-bottom:26px}
+  .lead b{color:var(--text);font-weight:500}
+
+  .errbox{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:28px;
+  }
+  .errbox .k{color:var(--text)}
+  .errbox .v-red{color:var(--pink)}
+  .errbox .v-amb{color:var(--amber)}
+
+  .btn{
+    font-family:"Space Grotesk",sans-serif;font-size:17px;font-weight:700;
+    border:none;border-radius:12px;padding:15px 22px;cursor:pointer;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:var(--pink);color:#1a0710;box-shadow:0 0 0 0 var(--pink-soft)}
+  .btn-primary:hover{box-shadow:0 0 0 8px var(--pink-soft)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .btn-ghost:hover{color:var(--text);border-color:var(--muted)}
+  .spin{display:inline-block}
+  .btn-primary:hover .spin{animation:rot 1s linear infinite}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .hint{margin-top:16px;font-size:13px;color:var(--muted)}
+
+  /* ---------- Screen 2: loading ---------- */
+  .term{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .term-bar{display:flex;gap:7px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:center}
+  .dot{width:11px;height:11px;border-radius:50%;background:#3a4152}
+  .dot:nth-child(1){background:#ff5f57}.dot:nth-child(2){background:#febc2e}.dot:nth-child(3){background:#28c840}
+  .term-title{margin-left:10px;font-size:12px;color:var(--muted)}
+  .term-body{padding:18px 18px 22px;min-height:250px;font-size:13.5px;line-height:1.75}
+  .log-line{white-space:pre-wrap;animation:fadeIn .25s ease both}
+  .log-line .ok{color:var(--green)}
+  .log-line .warn{color:var(--amber)}
+  .log-line .err{color:var(--pink)}
+  .log-line .dim{color:var(--muted)}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--green);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .progress-area{margin-top:22px}
+  .status{font-size:16px;margin-bottom:12px;min-height:24px}
+  .status .pct{font-family:"JetBrains Mono",monospace;font-weight:800;color:var(--pink);margin-left:6px}
+  .bar{height:12px;background:var(--panel);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .bar-fill{
+    height:100%;width:0%;border-radius:999px;
+    background:linear-gradient(90deg,var(--pink),#ff8fb0);
+    transition:width .5s ease;
+    position:relative;
+  }
+  .bar-fill::after{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg,#ffffff22 0 8px,transparent 8px 16px);
+    animation:stripes 1s linear infinite;
+  }
+  @keyframes stripes{to{background-position:22px 0}}
+  .sub{margin-top:10px;font-size:13px;color:var(--muted);min-height:20px;font-style:italic}
+
+  /* ---------- Screen 3: connected ---------- */
+  .ok-badge{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.06em;
+    color:var(--green);border:1px solid var(--green);border-radius:999px;padding:4px 12px;margin-bottom:22px;
+  }
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 #7cffb288}100%{box-shadow:0 0 0 10px #7cffb200}}
+  .big-heart{font-size:64px;display:inline-block;animation:beat 1.2s ease infinite;margin-bottom:6px}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+  .letter{
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--pink);
+    border-radius:12px;padding:18px 20px;font-size:16px;line-height:1.7;margin:18px 0 26px;
+  }
+  .letter p+p{margin-top:10px}
+  .question{font-size:clamp(22px,5vw,28px);font-weight:700;margin-bottom:18px}
+  .actions{display:flex;flex-wrap:wrap;gap:12px}
+
+  /* ---------- Screen 4/5: answers ---------- */
+  .center{text-align:center}
+  .final-emoji{font-size:72px;margin-bottom:10px}
+  .final-title{font-size:clamp(26px,6vw,34px);font-weight:700;margin-bottom:12px}
+  .final-text{color:var(--muted);font-size:17px;line-height:1.65;max-width:440px;margin:0 auto}
+  .final-text b{color:var(--text);font-weight:500}
+  .commit{
+    margin:26px auto 0;max-width:440px;text-align:left;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:12.5px;line-height:1.7;color:var(--muted)
+  }
+  .commit .h{color:var(--amber)}
+  .commit .ok{color:var(--green)}
+
+  .floaty{position:fixed;bottom:-40px;font-size:24px;pointer-events:none;z-index:1;animation:floatUp linear forwards}
+  @keyframes floatUp{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+
+  footer{margin-top:34px;font-size:12px;color:#5b6377}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<main class="wrap">
+
+  <!-- ========== 1. 404 ========== -->
+  <section class="screen active" id="s-404">
+    <span class="code-tag mono">ERR_HATI_TERPUTUS</span><br>
+    <div class="glitch" data-text="404">404</div>
+    <h1>Kita <span class="strike">Found</span> Not Found</h1>
+    <p class="lead">
+      Halaman yang kamu cari <b>sudah dihapus</b>...<br>
+      tapi masih ada di Recycle Bin. <b>Bisa di-restore.</b>
+    </p>
+
+    <div class="errbox mono">
+      <div><span class="k">status</span>&nbsp;&nbsp;&nbsp;: <span class="v-red">terputus</span></div>
+      <div><span class="k">penyebab</span>&nbsp;: <span class="v-amb">gengsi.exe tidak merespons</span></div>
+      <div><span class="k">kenangan</span>&nbsp;: tersimpan aman (backup lengkap)</div>
+      <div><span class="k">saran</span>&nbsp;&nbsp;&nbsp;&nbsp;: coba sambungkan ulang</div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-reconnect">
+      Coba sambungkan ulang <span class="spin">🔄</span>
+    </button>
+    <p class="hint">Cuma satu klik. Nggak bakal ada virus, cuma rindu.</p>
+  </section>
+
+  <!-- ========== 2. Loading ========== -->
+  <section class="screen" id="s-loading">
+    <div class="term mono">
+      <div class="term-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="term-title">restore-kita.sh</span>
+      </div>
+      <div class="term-body" id="log"></div>
+    </div>
+
+    <div class="progress-area">
+      <div class="status" id="status">Menyiapkan koneksi...<span class="pct" id="pct">0%</span></div>
+      <div class="bar"><div class="bar-fill" id="fill"></div></div>
+      <div class="sub" id="sub"></div>
+    </div>
+  </section>
+
+  <!-- ========== 3. Connected ========== -->
+  <section class="screen" id="s-connected">
+    <span class="ok-badge mono"><span class="pulse"></span> KONEKSI DIPULIHKAN</span><br>
+    <span class="big-heart">💗</span>
+    <h1 id="greeting">Hai, kamu.</h1>
+
+    <div class="letter" id="letter"></div>
+
+    <p class="question" id="question"></p>
+    <div class="actions">
+      <button class="btn btn-primary" id="btn-yes">Mau ☕</button>
+      <button class="btn btn-ghost" id="btn-no">Belum dulu</button>
+    </div>
+  </section>
+
+  <!-- ========== 4. Yes ========== -->
+  <section class="screen center" id="s-yes">
+    <div class="final-emoji">🥹☕</div>
+    <p class="final-title">Restore berhasil 100%!</p>
+    <p class="final-text" id="yes-text"></p>
+    <div class="commit mono">
+      <div><span class="h">$</span> git commit -m "dia bilang mau"</div>
+      <div><span class="ok">[main a9f2c1d]</span> 1 hati berubah, 0 gengsi tersisa</div>
+      <div><span class="h">$</span> git push origin kita</div>
+      <div><span class="ok">✔ Berhasil.</span> Sampai ketemu ya.</div>
+    </div>
+  </section>
+
+  <!-- ========== 5. No ========== -->
+  <section class="screen center" id="s-no">
+    <div class="final-emoji">🙏</div>
+    <p class="final-title">Oke, aku hargai jawabanmu.</p>
+    <p class="final-text" id="no-text"></p>
+    <div class="commit mono">
+      <div><span class="h">$</span> git status</div>
+      <div>Nothing to commit. Working tree clean.</div>
+      <div><span class="ok">✔ Terima kasih udah mampir.</span></div>
+    </div>
+  </section>
+
+  <footer class="mono" id="footer"></footer>
+</main>
+
+<script>
+/* =========================================================
+   ✏️  EDIT DI SINI — ganti sesuai cerita kalian
+   ========================================================= */
+const CONFIG = {
+  namaDia:  "kamu",          // nama panggilan dia, misal "Nadia" atau "Sayangku dulu"
+  namaKamu: "aku",           // nama kamu, muncul di footer
+  surat: [
+    "Aku tahu kita udah lama nggak ngobrol, dan aku nggak mau pura-pura semuanya baik-baik aja.",
+    "Tapi jujur, ada banyak hal kecil yang masih sering aku inget — dan kebanyakan bikin aku senyum sendiri.",
+    "Aku nggak minta apa-apa yang besar. Cuma pengin ngobrol lagi, pelan-pelan."
+  ],
+  pertanyaan: "Mau ngopi bareng sekali, ngobrol santai?",
+  balasanMau: "Makasih udah mau. Serius, ini bikin hariku. Kabarin aku kapan kamu free ya — aku yang traktir.",
+  balasanBelum: "Makasih udah mau buka halaman ini sampai habis. Itu udah berarti banyak buat aku. Semoga kamu selalu bahagia, apa pun pilihanmu."
+};
+/* ========================================================= */
+
+const $ = id => document.getElementById(id);
+const show = id => {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// isi teks dari CONFIG
+$("greeting").textContent = `Hai, ${CONFIG.namaDia}.`;
+$("letter").innerHTML = CONFIG.surat.map(p => `<p></p>`).join("");
+[...$("letter").children].forEach((p,i) => p.textContent = CONFIG.surat[i]);
+$("question").textContent = CONFIG.pertanyaan;
+$("yes-text").textContent = CONFIG.balasanMau;
+$("no-text").textContent = CONFIG.balasanBelum;
+$("footer").textContent = `dibuat pakai rindu & sedikit JavaScript — ${CONFIG.namaKamu}`;
+
+// ---------- loading sequence ----------
+const STEPS = [
+  { pct: 3,  status: "Menyiapkan koneksi...",          log: `<span class="dim">$</span> ./restore-kita.sh --pelan-pelan`, wait: 900 },
+  { pct: 12, status: "Menghubungkan ke hatimu...",     log: `<span class="dim">[info]</span> ping hati.kamu ... <span class="ok">ada balasan</span>`, wait: 1600 },
+  { pct: 24, status: "Mencari kenangan yang tersisa...", log: `<span class="dim">[scan]</span> 1.284 chat "udah makan belum?" ditemukan`, wait: 1700 },
+  { pct: 35, status: "Mencari kenangan yang tersisa...", log: `<span class="dim">[scan]</span> 37 foto candid kamu (jelek semua, tapi lucu)`, wait: 1500 },
+  { pct: 47, status: "Menghapus gengsi...",            log: `<span class="warn">[warn]</span> gengsi.exe menolak dihapus. mencoba lagi...`, wait: 1900 },
+  { pct: 58, status: "Menghapus gengsi...",            log: `<span class="ok">[ ok ]</span> gengsi.exe berhasil dihapus permanen`, wait: 1400 },
+  { pct: 66, status: "Memperbaiki bug lama...",        log: `<span class="ok">[fix ]</span> bug "telat bales chat" — sudah diperbaiki`, wait: 1500 },
+  { pct: 74, status: "Memperbaiki bug lama...",        log: `<span class="ok">[fix ]</span> bug "ngambek tanpa alasan" — sudah diperbaiki`, wait: 1500 },
+  { pct: 85, status: "Menginstal versi aku yang lebih baik...", log: `<span class="dim">[inst]</span> sabar.dll, dengerin.dll, peka.dll ... <span class="ok">done</span>`, wait: 1800 },
+  { pct: 93, status: "Hampir sampai...",               log: `<span class="dim">[info]</span> mengirim sinyal rindu ke server kamu...`, wait: 1700 },
+  { pct: 99, status: "Menghubungkan ke hatimu...",     log: `<span class="warn">[wait]</span> sinyal lemah. rindu memang suka lemot.`, wait: 1200 },
+];
+
+const STALL = [
+  "(sabar, ini sinyal rindu)",
+  "(masih 99%... jangan ditutup dulu ya)",
+  "(lagi nunggu kamu senyum dikit)",
+  "(dikit lagi, sumpah)",
+];
+
+function addLog(html){
+  const old = $("log").querySelector(".cursor");
+  if (old) old.remove();
+  const div = document.createElement("div");
+  div.className = "log-line";
+  div.innerHTML = html + ' <span class="cursor"></span>';
+  $("log").appendChild(div);
+}
+
+function setProgress(pct, status){
+  $("fill").style.width = pct + "%";
+  $("status").firstChild.textContent = status;
+  $("pct").textContent = (Number.isInteger(pct) ? pct : pct.toFixed(1)) + "%";
+}
+
+async function runLoading(){
+  show("s-loading");
+  for (const s of STEPS){
+    setProgress(s.pct, s.status);
+    addLog(s.log);
+    await sleep(s.wait);
+  }
+  // macet di 99% dengan sengaja
+  let p = 99;
+  for (let i = 0; i < STALL.length; i++){
+    $("sub").textContent = STALL[i];
+    await sleep(2000);
+    p += 0.2;
+    setProgress(p, "Menghubungkan ke hatimu...");
+  }
+  $("sub").textContent = "";
+  setProgress(100, "Sinyal ditemukan ✔");
+  addLog(`<span class="ok">[ ok ]</span> koneksi ke hati.kamu berhasil dipulihkan`);
+  await sleep(1400);
+  show("s-connected");
+}
+
+// ---------- hati beterbangan ----------
+function floatHearts(n = 26, set = ["💗","💖","💕","☕","✨"]){
+  for (let i = 0; i < n; i++){
+    const el = document.createElement("span");
+    el.className = "floaty";
+    el.textContent = set[Math.floor(Math.random()*set.length)];
+    el.style.left = Math.random()*100 + "vw";
+    el.style.fontSize = (18 + Math.random()*22) + "px";
+    el.style.animationDuration = (3.5 + Math.random()*3) + "s";
+    el.style.animationDelay = (Math.random()*1.5) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 8000);
+  }
+}
+
+$("btn-reconnect").addEventListener("click", runLoading);
+$("btn-yes").addEventListener("click", () => { show("s-yes"); floatHearts(); });
+$("btn-no").addEventListener("click", () => show("s-no"));
+</script>
+</body>
+</html>
